@@ -3,6 +3,9 @@
 let currentStep = 1;
 const totalSteps = 6;
 let userName = "My Love";
+// Allowed name (case-insensitive match)
+const ALLOWED_NAME = "Tehreem";
+
 
 
 // Initialize particles.js
@@ -209,26 +212,12 @@ function nextStep() {
     }
 }
 
-// Function to save name
 function saveName() {
-    const nameInput = document.getElementById('nameInput').value.trim();
-    if (nameInput) {
-        userName = nameInput;
-        document.getElementById('displayName').textContent = userName;
-        document.getElementById('finalName').textContent = userName;
-        document.getElementById('heartName').textContent = userName;
-        nextStep();
-        
-        // Animate success
-        gsap.to(".name-input", {
-            backgroundColor: "#e8f5e9",
-            borderColor: "#81c784",
-            duration: 0.5,
-            yoyo: true,
-            repeat: 1
-        });
-    } else {
-        // Animate error
+    const nameInputEl = document.getElementById('nameInput');
+    const nameInput = nameInputEl.value.trim();
+
+    // Empty name: show error + stop
+    if (!nameInput) {
         gsap.to(".name-input", {
             backgroundColor: "#ffebee",
             borderColor: "#e53935",
@@ -236,9 +225,40 @@ function saveName() {
             yoyo: true,
             repeat: 1
         });
-        alert("Please enter your beautiful name to continue");
+        alert("Please enter your name to continue.");
+        return;
     }
+
+    // Only allow "Tehreem" (case-insensitive)
+    if (nameInput.toLowerCase() !== ALLOWED_NAME.toLowerCase()) {
+        gsap.to(".name-input", {
+            backgroundColor: "#ffebee",
+            borderColor: "#e53935",
+            duration: 0.5,
+            yoyo: true,
+            repeat: 1
+        });
+        alert("This Surprise is only for \"Tehreem\" 💖");
+        return;
+    }
+
+    // Correct name → proceed
+    userName = ALLOWED_NAME; // lock to exact casing
+    document.getElementById('displayName').textContent = userName;
+    document.getElementById('finalName').textContent = userName;
+    document.getElementById('heartName').textContent = userName;
+
+    gsap.to(".name-input", {
+        backgroundColor: "#e8f5e9",
+        borderColor: "#81c784",
+        duration: 0.5,
+        yoyo: true,
+        repeat: 1
+    });
+
+    nextStep();
 }
+
 
 // Function to create floating hearts
 function createHearts() {
@@ -510,3 +530,4 @@ function shareOnSocial(platform) {
         repeat: 1
     });
 }
+
